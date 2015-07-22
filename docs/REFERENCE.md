@@ -18,7 +18,7 @@ __(More examples coming soon!)__
 ###Also see:
 
 1. [The ripple-lib README](../README.md)
-2. [The ripple-lib GUIDES](GUIDES.md)a
+2. [The ripple-lib GUIDES](GUIDES.md)
 
 #Remote options
 
