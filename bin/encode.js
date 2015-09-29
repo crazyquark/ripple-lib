@@ -6,12 +6,14 @@ var argv = process.argv.slice(2);
 
 var verbose;
 var tx_json;
+var pub_key;
 
 if (~argv.indexOf('-v')){
   argv.splice(argv.indexOf('-v'), 1);
   verbose = true;
 }
 
+pub_key = argv.shift();
 tx_json = argv.shift();
 
 if (tx_json === '-') {
@@ -28,7 +30,7 @@ function read_input(callback) {
 }
 
 function ready() {
-  var valid_arguments = tx_json;
+  var valid_arguments = tx_json && pub_key;
 
   if (!valid_arguments) {
     console.error('Invalid arguments\n');
@@ -53,8 +55,8 @@ function ready() {
 
 function print_usage() {
   console.log(
-    'Usage: encode.js <json>\n\n',
-    'Example: encode.js ','\''+
+    'Usage: encode.js <pubkey_hex> <json>\n\n',
+    'Example: encode.js 04CB30ACE4D5690F97B04E82DD25F658517CFBD98DD9F9E639CEE41DEDE5BC787E3FA79A5BF5D39E07FC7C84215D609CCB69D4F4B86FB83494EB3A37','\''+
     JSON.stringify({
       TransactionType: 'Payment',
       Account: 'r3P9vH81KBayazSTrQj6S25jW6kDb779Gi',
@@ -71,7 +73,10 @@ function sign_transaction() {
 
   tx.tx_json = tx_json;
   tx.complete();
-
+  
+  // Hack: manually add public key
+  tx.tx_json.SigningPubKey = pub_key;
+  
   var unsigned_blob = tx.serialize().to_hex();
   var unsigned_hash = tx.signingHash();
 
