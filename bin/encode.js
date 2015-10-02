@@ -7,6 +7,7 @@ var argv = process.argv.slice(2);
 var verbose;
 var tx_json;
 var pub_key;
+var signed_hash;
 
 if (~argv.indexOf('-v')){
   argv.splice(argv.indexOf('-v'), 1);
@@ -15,6 +16,7 @@ if (~argv.indexOf('-v')){
 
 pub_key = argv.shift();
 tx_json = argv.shift();
+signed_hash = argv.shift();
 
 if (tx_json === '-') {
   read_input(ready);
@@ -55,7 +57,7 @@ function ready() {
 
 function print_usage() {
   console.log(
-    'Usage: encode.js <pubkey_hex> <json>\n\n',
+    'Usage: encode.js <pubkey_hex> <json> [signed_hash_hex]\n\n',
     'Example: encode.js 04CB30ACE4D5690F97B04E82DD25F658517CFBD98DD9F9E639CEE41DEDE5BC787E3FA79A5BF5D39E07FC7C84215D609CCB69D4F4B86FB83494EB3A37','\''+
     JSON.stringify({
       TransactionType: 'Payment',
@@ -80,6 +82,11 @@ function sign_transaction() {
   var unsigned_blob = tx.serialize().to_hex();
   var unsigned_hash = tx.signingHash();
 
+  // Hack(again): manually add transaction signature
+  if (signed_hash) {
+    tx.tx_json.TxnSignature = signed_hash
+  }
+  
   if (verbose) {
     var sim = { };
 
@@ -87,6 +94,7 @@ function sign_transaction() {
     sim.tx_json         = tx.tx_json;
     sim.tx_signing_hash = unsigned_hash;
     sim.tx_unsigned     = unsigned_blob;
+    sim.signing_data    = tx.signingData();
 
     console.log(JSON.stringify(sim, null, 2));
   } else {
