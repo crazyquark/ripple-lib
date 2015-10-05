@@ -14,7 +14,7 @@ var UInt160 = require('./uint160').UInt160;
 var KeyPair = require('./keypair').KeyPair;
 
 var Seed = extend(function() {
-  this._curve = sjcl.ecc.curves.k256;
+  this._curve = sjcl.ecc.curves.c256;
   this._value = NaN;
 }, UInt);
 
