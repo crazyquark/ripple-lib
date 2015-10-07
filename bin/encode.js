@@ -94,7 +94,7 @@ function sign_transaction() {
     sim.tx_json         = tx.tx_json;
     sim.tx_signing_hash = unsigned_hash;
     sim.tx_unsigned     = unsigned_blob;
-    sim.signing_data    = tx.signingData();
+    //sim.signing_data    = tx.signingData();
 
     console.log(JSON.stringify(sim, null, 2));
   } else {
